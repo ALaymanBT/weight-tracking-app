@@ -1,0 +1,24 @@
+<resources>
+
+    <style name="button">
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="button.light">
+        <item name="android:background">@drawable/button_light</item>
+        <item name="android:textColor">@color/grey</item>
+    </style>
+
+    <style name="card">
+        <item name="android:layout_margin">8dp</item>
+        <item name="cardCornerRadius">4dp</item>
+    </style>
+
+    <style name="input">
+        <item name="android:background">@drawable/text_input</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
+</resources>
