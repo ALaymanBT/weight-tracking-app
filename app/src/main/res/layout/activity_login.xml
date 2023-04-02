@@ -2,20 +2,33 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_above="@id/loginContainer"
-        android:gravity="center_vertical"
+        android:layout_above="@id/login_container"
         android:layout_centerHorizontal="true"
-        android:text="Mobile2App"
-        android:textSize="50sp" />
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Weight Tracker"
+            android:textSize="50sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:text="Mobile2App"
+            android:textStyle="italic"
+            android:textSize="15sp" />
+    </LinearLayout>
+
 
     <LinearLayout
-        android:id="@+id/loginContainer"
+        android:id="@+id/login_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -24,9 +37,10 @@
         android:layout_marginStart="40dp">
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_gravity="center_horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -34,15 +48,15 @@
 
             <EditText
                 android:id="@+id/username"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
                 style="@style/input"/>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true">
+            android:layout_gravity="center_horizontal">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +64,7 @@
 
             <EditText
                 android:id="@+id/password"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="35dp"
                 style="@style/input"
                 android:inputType="textVisiblePassword"/>
@@ -58,15 +72,15 @@
 
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:padding="8dp">
 
             <Button
                 android:id="@+id/loginButton"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:text="Login"
                 android:layout_weight="1"/>
 
