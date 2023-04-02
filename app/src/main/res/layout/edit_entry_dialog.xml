@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- FIXME: Implement via AlertDialog.
+            Will be used for both adding and editing entries -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/edit_entry_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/weight"/>
+
+        <EditText
+            android:id="@+id/entry_input"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:maxLines="1"
+            android:inputType="number"
+            style="@style/input"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/date"/>
+
+        <EditText
+            android:id="@+id/date_input"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:maxLines="1"
+            style="@style/input"
+            android:inputType="date"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+
+        <Button
+            android:id="@+id/cancel_edit_button"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="@string/cancel"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/save_edit_button"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/save"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+</LinearLayout>
