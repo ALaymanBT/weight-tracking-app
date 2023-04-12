@@ -9,7 +9,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CS360Project2_ALayman"
+        android:theme="@style/Theme.CS360Project_ALayman"
         tools:targetApi="31">
         <activity
             android:name=".SettingsActivity"

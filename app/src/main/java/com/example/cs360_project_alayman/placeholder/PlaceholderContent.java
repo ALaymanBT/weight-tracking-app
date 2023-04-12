@@ -1,4 +1,4 @@
-package com.example.cs360_project2_alayman.placeholder;
+package com.example.cs360_project_alayman.placeholder;
 
 import java.util.ArrayList;
 import java.util.HashMap;

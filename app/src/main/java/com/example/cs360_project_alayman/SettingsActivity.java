@@ -1,4 +1,4 @@
-package com.example.cs360_project2_alayman;
+package com.example.cs360_project_alayman;
 
 import androidx.appcompat.app.AppCompatActivity;
 
