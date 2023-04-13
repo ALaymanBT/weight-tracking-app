@@ -1,4 +1,4 @@
-package com.example.cs360_project_alayman;
+package com.cs360_project_alayman.cs360_project_alayman;
 
 import org.junit.Test;
 
