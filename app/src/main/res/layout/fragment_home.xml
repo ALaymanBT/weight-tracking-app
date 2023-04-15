@@ -27,8 +27,7 @@
             android:id="@+id/goal_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/card_content_main"
-            android:text="160lbs"/>
+            style="@style/card_content_main" />
 
     </androidx.cardview.widget.CardView>
     <androidx.cardview.widget.CardView
@@ -50,8 +49,7 @@
             android:id="@+id/weight_progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/card_content_main"
-            android:text="-7lbs"/>
+            style="@style/card_content_main" />
 
     </androidx.cardview.widget.CardView>
 
@@ -73,8 +71,7 @@
             android:id="@+id/current_weight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/card_content_main"
-            android:text="178lbs"/>
+            style="@style/card_content_main" />
     </androidx.cardview.widget.CardView>
 
     <!-- FIXME: Convert to fragment container for data table-->

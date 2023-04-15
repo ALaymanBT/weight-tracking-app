@@ -1,12 +1,14 @@
-package com.cs360_project_alayman.model.User;
+package com.cs360_project_alayman.model;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity
-public class UserEntity {
+@Entity(indices = {@Index(value = {"username"},
+        unique = true)})
+public class User {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
@@ -20,11 +22,7 @@ public class UserEntity {
     @ColumnInfo(name = "password")
     private String password;
 
-    public UserEntity(String username, String password) {
-        setUsername(username);
-        setPassword(password);
-    }
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

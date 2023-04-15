@@ -7,16 +7,29 @@
 
     <fragment
         android:id="@+id/fragment_login"
-        android:name="com.example.cs360_project_alayman.LoginFragment"
+        android:name="com.cs360_project_alayman.fragments.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_loginFragment_to_homeFragment"
+            android:id="@+id/action_fragment_login_to_fragment_home"
             app:destination="@id/fragment_home" />
     </fragment>
     <fragment
         android:id="@+id/fragment_home"
-        android:name="com.example.cs360_project_alayman.HomeFragment"
+        android:name="com.cs360_project_alayman.fragments.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home"/>
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_fragment_home_to_fragment_settings"
+            app:destination="@id/fragment_settings"
+            app:popUpTo="@id/fragment_home"/>
+        <action
+            android:id="@+id/action_fragment_home_to_fragment_login"
+            app:destination="@id/fragment_login"/>
+    </fragment>
+    <fragment
+        android:id="@+id/fragment_settings"
+        android:name="com.cs360_project_alayman.fragments.SettingsFragment"
+        android:label="@string/title_settings"
+        tools:layout="@layout/fragment_settings"/>
 </navigation>

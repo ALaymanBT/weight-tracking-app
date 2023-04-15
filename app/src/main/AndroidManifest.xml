@@ -11,22 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CS360Project_ALayman"
         tools:targetApi="31">
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="true"
-            android:label="Settings"
-            android:parentActivityName=".MainActivity"/>
-        <activity
-            android:name=".LoginActivity"
-            android:exported="true"
-            android:label="Login"/>
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="Home">
+        <activity android:name="com.cs360_project_alayman.controller.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
