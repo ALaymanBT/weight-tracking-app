@@ -10,6 +10,9 @@ import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,18 +32,20 @@ import com.cs360_project_alayman.repository.UserWeightRepository;
 import com.cs360_project_alayman.ui.activities.MainActivity;
 import com.cs360_project_alayman.R;
 import com.cs360_project_alayman.utils.auth.AuthenticatedUserManager;
+import com.cs360_project_alayman.viewmodel.WeightViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private AuthenticatedUserManager authenticatedUserManager;
     private UserWeightRepository userWeightRepository;
     private FloatingActionButton addFab;
-    private ArrayList<Weight> weightArrayList;
     private RecyclerView weightRecyclerView;
     private WeightAdapter weightAdapter;
+    private WeightViewModel weightViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,8 +59,12 @@ public class HomeFragment extends Fragment {
         String title = getString(R.string.title_home);
         ((MainActivity) requireActivity()).setUpToolbar(title, false);
         authenticatedUserManager = AuthenticatedUserManager.getInstance();
+
+        // FIXME: Might not need this if using viewmodel, don't forget the add button and variable declaration
         userWeightRepository = UserWeightRepository.getInstance(getContext());
+
         addFab = view.findViewById(R.id.fab_add);
+
         weightRecyclerView = view.findViewById(R.id.weight_list);
         weightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -98,18 +107,25 @@ public class HomeFragment extends Fragment {
         // Initialize RecyclerView for the weight list
         initData();
 
+
     }
 
     /**
      * Queries the weight table for a list of weights matching the current user,
-     * then sets up the RecyclerView to display the returned data
+     * then gets LiveData from the ViewModel and sets up the RecyclerView
+     * to display the returned data
      */
     public void initData() {
-        // Get weight list for current logged in user
-        weightArrayList = userWeightRepository.getWeightList(authenticatedUserManager.getUser().getId());
-        weightAdapter = new WeightAdapter(getContext(), weightArrayList);
+        weightViewModel = new ViewModelProvider(this).get(WeightViewModel.class);
+        weightAdapter = new WeightAdapter(getContext(), weightViewModel);
+
+        // Get weight list live data for current logged in user
+        weightViewModel.getWeightList(authenticatedUserManager.getUser().getId())
+                .observe(getViewLifecycleOwner(), (weights) -> {
+                    weightAdapter.setWeightList(weights);
+                });
+
         weightRecyclerView.setAdapter(weightAdapter);
-        weightAdapter.notifyDataSetChanged();
     }
     // FIXME: Add logic to check for duplicate date entry
     // FIXME: Add logic to edit weight after long click on weight in recycler view
@@ -127,12 +143,12 @@ public class HomeFragment extends Fragment {
 
         btnSave.setOnClickListener((v) -> {
             Weight weight = new Weight();
-            // FIXME: Add function here to check for errors
+            // FIXME: Add try/catch here to check for errors
             Double weightValue = Double.parseDouble(etWeight.getText().toString());
             weight.setWeight(weightValue);
             weight.setUserId(authenticatedUserManager.getUser().getId());
             userWeightRepository.addWeight(weight);
-            weightAdapter.notifyDataSetChanged();
+            //weightAdapter.notifyDataSetChanged();
             Toast t = Toast.makeText(getActivity(), "Added daily weight!", Toast.LENGTH_LONG);
             t.show();
             dialog.dismiss();
@@ -140,5 +156,10 @@ public class HomeFragment extends Fragment {
         btnCancel.setOnClickListener((v) -> {
             dialog.dismiss();
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+
     }
 }

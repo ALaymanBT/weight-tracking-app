@@ -2,6 +2,7 @@ package com.cs360_project_alayman.repository;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
 import com.cs360_project_alayman.data.dao.WeightDao;
@@ -56,11 +57,17 @@ public class UserWeightRepository {
     public void addWeight(Weight weight) {
         long weightId = weightDao.addWeight(weight);
     }
+    public void deleteWeight(Weight weight) {
+        weightDao.deleteWeight(weight);
+    }
+    public void updateWeight(Weight weight) {
+        weightDao.updateWeight(weight);
+    }
     public Weight getWeight(long id) {
         return weightDao.getWeight(id);
     }
-    public ArrayList<Weight> getWeightList(long user_id) {
-        return new ArrayList<Weight>(weightDao.getWeightList(user_id));
+    public LiveData<List<Weight>> getWeightList(long userId) {
+        return weightDao.getWeightList(userId);
     }
 
 

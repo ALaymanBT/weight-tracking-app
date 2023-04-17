@@ -8,7 +8,7 @@ import com.cs360_project_alayman.data.entities.User;
 import com.cs360_project_alayman.data.dao.UserDao;
 import com.cs360_project_alayman.data.entities.Weight;
 
-@Database(entities = {User.class, Weight.class}, version = 3)
+@Database(entities = {User.class, Weight.class}, version = 4)
 public abstract class UserWeightDatabase extends RoomDatabase {
 
     public abstract UserDao userDao();
