@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/fragment_login"
-        android:name="com.cs360_project_alayman.fragments.LoginFragment"
+        android:name="com.cs360_project_alayman.ui.fragments.LoginFragment"
         android:label="@string/title_login"
         tools:layout="@layout/fragment_login">
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_home"
-        android:name="com.cs360_project_alayman.fragments.HomeFragment"
+        android:name="com.cs360_project_alayman.ui.fragments.HomeFragment"
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/fragment_settings"
-        android:name="com.cs360_project_alayman.fragments.SettingsFragment"
+        android:name="com.cs360_project_alayman.ui.fragments.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings"/>
 </navigation>

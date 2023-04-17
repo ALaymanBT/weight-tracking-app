@@ -1,4 +1,4 @@
-package com.cs360_project_alayman.controller;
+package com.cs360_project_alayman.ui.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,7 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
 
-import com.cs360_project_alayman.fragments.LoginFragment;
+import com.cs360_project_alayman.ui.fragments.LoginFragment;
 import com.cs360_project_alayman.R;
 
 public class MainActivity extends AppCompatActivity {

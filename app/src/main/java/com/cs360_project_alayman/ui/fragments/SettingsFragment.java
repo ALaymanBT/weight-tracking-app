@@ -1,4 +1,4 @@
-package com.cs360_project_alayman.fragments;
+package com.cs360_project_alayman.ui.fragments;
 
 import android.os.Bundle;
 
@@ -8,7 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cs360_project_alayman.controller.MainActivity;
+import com.cs360_project_alayman.ui.activities.MainActivity;
 import com.cs360_project_alayman.R;
 
 public class SettingsFragment extends Fragment {

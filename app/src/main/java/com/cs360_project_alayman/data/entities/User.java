@@ -1,4 +1,4 @@
-package com.cs360_project_alayman.model;
+package com.cs360_project_alayman.data.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
