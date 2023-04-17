@@ -8,9 +8,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cs360_project_alayman.data.entities.Weight;
+import com.cs360_project_alayman.ui.fragments.HomeFragment;
 import com.cs360_project_alayman.viewmodel.WeightViewModel;
 
 import java.util.ArrayList;
@@ -18,18 +20,18 @@ import java.util.List;
 
 public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightViewHolder> {
 
-    Context context;
+    Fragment fragment;
     List<Weight> weightList;
     WeightViewModel weightViewModel;
 
-    public WeightAdapter(Context context, WeightViewModel weightViewModel) {
-        this.context = context;
+    public WeightAdapter(Fragment fragment, WeightViewModel weightViewModel) {
+        this.fragment = fragment;
         this.weightViewModel = weightViewModel;
     }
     @NonNull
     @Override
     public WeightViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.list_item_entry, parent, false);
+        View v = LayoutInflater.from(fragment.getContext()).inflate(R.layout.list_item_entry, parent, false);
         return new WeightViewHolder(v);
     }
 
@@ -37,6 +39,12 @@ public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightView
     public void onBindViewHolder(@NonNull WeightViewHolder holder, int position) {
         Weight weight = weightList.get(position);
         holder.txtWeight.setText(String.format("%.1f", weight.getWeight()));
+        holder.txtWeight.setOnLongClickListener((v) -> {
+            if (fragment instanceof HomeFragment) {
+                ((HomeFragment)fragment).showDialog(weight);
+            }
+            return false;
+        });
         holder.btnDelete.setOnClickListener((v) -> {
             weightViewModel.deleteWeight(weight);
             weightList.remove(weight);

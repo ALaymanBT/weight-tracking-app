@@ -6,12 +6,13 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Room;
 
 import com.cs360_project_alayman.data.dao.WeightDao;
+import com.cs360_project_alayman.data.dao.WeightGoalDao;
 import com.cs360_project_alayman.data.database.UserWeightDatabase;
 import com.cs360_project_alayman.data.entities.User;
 import com.cs360_project_alayman.data.dao.UserDao;
 import com.cs360_project_alayman.data.entities.Weight;
+import com.cs360_project_alayman.data.entities.WeightGoal;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserWeightRepository {
@@ -19,6 +20,7 @@ public class UserWeightRepository {
     private static UserWeightRepository weightRepo;
     private final UserDao userDao;
     private final WeightDao weightDao;
+    private final WeightGoalDao weightGoalDao;
 
     //FIXME: ADD JAVADOC COMMENTS
 
@@ -43,6 +45,7 @@ public class UserWeightRepository {
 
         userDao = db.userDao();
         weightDao = db.weightDao();
+        weightGoalDao = db.weightGoalDao();
     }
 
     public void addUser(User user) {
@@ -68,6 +71,14 @@ public class UserWeightRepository {
     }
     public LiveData<List<Weight>> getWeightList(long userId) {
         return weightDao.getWeightList(userId);
+    }
+
+    public void addWeightGoal(WeightGoal weightGoal) {
+        weightGoalDao.addWeightGoal(weightGoal);
+    }
+
+    public WeightGoal getWeightGoal(long userId) {
+        return weightGoalDao.getWeightGoal(userId);
     }
 
 
