@@ -1,7 +1,5 @@
 package com.cs360_project_alayman.ui.fragments;
 
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.os.Bundle;
@@ -24,9 +22,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +38,12 @@ import com.cs360_project_alayman.viewmodel.WeightGoalViewModel;
 import com.cs360_project_alayman.viewmodel.WeightViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Calendar;
+import java.util.Date;
+
 
 public class HomeFragment extends Fragment {
 
@@ -53,7 +56,6 @@ public class HomeFragment extends Fragment {
     private WeightGoalViewModel weightGoalViewModel;
     private TextView txtGoalWeight;
     private long currentUser;
-    private Dialog dialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,8 +76,6 @@ public class HomeFragment extends Fragment {
 
         addFab = view.findViewById(R.id.fab_add);
         txtGoalWeight = view.findViewById(R.id.goal_weight);
-        dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.edit_entry_dialog);
 
         weightRecyclerView = view.findViewById(R.id.weight_list);
         weightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -113,38 +113,9 @@ public class HomeFragment extends Fragment {
 
         // Initialize the floating action button
         addFab.setOnClickListener((v) -> {
-            showDialog(null);
+            createDialog(null, 0);
         });
 
-        weightGoalViewModel = new ViewModelProvider(this).get(WeightGoalViewModel.class);
-        WeightGoal userGoalWeight = weightGoalViewModel.getWeightGoal(currentUser);
-        if (userGoalWeight == null) {
-
-            //FIXME: This all needs to go under add/edit dialog. For new goal weight we need radio buttons
-            LinearLayout linearLayout = dialog.findViewById(R.id.entry_secondary_container);
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            DatePicker datePicker = new DatePicker(getContext());
-            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
-            datePickerDialog.show();
-            datePicker.setLayoutParams(layoutParams);
-            linearLayout.addView(datePicker);
-            //showDialog(null);
-            Toast t = Toast.makeText(getActivity(), "null goal weight", Toast.LENGTH_LONG);
-            t.show();
-
-            userGoalWeight = new WeightGoal();
-            //weightGoal.setGoalWeight(150.0);
-            //weightGoal.setGoalType(0);
-            //weightGoal.setUserId(currentUser);
-            //
-            //weightGoalViewModel.addWeightGoal(weightGoal);
-        }
-        else {
-            txtGoalWeight.setText(Double.toString(userGoalWeight.getGoalWeight()));
-        }
-
-
-        // Initialize RecyclerView for the weight list
         initData();
 
     }
@@ -155,11 +126,20 @@ public class HomeFragment extends Fragment {
      * to display the returned data
      */
     public void initData() {
+        weightGoalViewModel = new ViewModelProvider(this).get(WeightGoalViewModel.class);
+        WeightGoal userGoalWeight = weightGoalViewModel.getWeightGoal(currentUser);
+
+        if (userGoalWeight == null) {
+            createDialog(null, 1);
+        }
+        else {
+            txtGoalWeight.setText(Double.toString(userGoalWeight.getGoalWeight()));
+        }
         weightViewModel = new ViewModelProvider(this).get(WeightViewModel.class);
         weightAdapter = new WeightAdapter(this, weightViewModel);
 
         // Get weight list live data for current logged in user
-        weightViewModel.getWeightList(authenticatedUserManager.getUser().getId())
+        weightViewModel.getWeightList(currentUser)
                 .observe(getViewLifecycleOwner(), (weights) -> {
                     weightAdapter.setWeightList(weights);
                 });
@@ -167,57 +147,154 @@ public class HomeFragment extends Fragment {
         weightRecyclerView.setAdapter(weightAdapter);
     }
     // FIXME: Add logic to check for duplicate date entry
-    // FIXME: Add logic to edit weight after long click on weight in recycler view
     /**
+     * @param weight - the weight to update, or null if adding a new weight
+     * @param dialogType - the type of dialog to create. 0 for add/edit weight entry,
+     *                   or 1 for add weight goal
      * Creates dialog to add a new weight entry if called by the FAB, or to edit a weight entry if
-     * called by a long click on a weight. Pass null for a new entry or a weight object to edit the selected entry
+     * called by a long click on a weight.
      */
-    public void showDialog(Weight weight) {
+    public void createDialog(Weight weight, int dialogType) {
+        Dialog dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.edit_entry_dialog);
 
-
+        int args = dialogType;
         Button btnCancel = dialog.findViewById(R.id.edit_button_negative);
         Button btnSave = dialog.findViewById(R.id.edit_button_positive);
         EditText etWeight = dialog.findViewById(R.id.weight_input);
         TextView txtTitle = dialog.findViewById(R.id.edit_entry_title);
-        Weight newWeight;
+        TextView txtLabel = dialog.findViewById(R.id.entry_secondary_label);
 
-        // Add a new weight to the database if null
-        if (weight == null) {
 
-            txtTitle.setText(R.string.add_weight_entry);
-            newWeight = new Weight();
+        // Create add/edit dialog
+        if (args == 0) {
+            TextView txtDate = dialog.findViewById(R.id.date_input);
+            final Calendar calendar = Calendar.getInstance();
+            Weight newWeight = new Weight();
 
-            btnSave.setOnClickListener((v) -> {
-                // FIXME: Add try/catch here to check for errors?
-                Double weightValue = Double.parseDouble(etWeight.getText().toString());
-                newWeight.setWeight(weightValue);
-                newWeight.setUserId(authenticatedUserManager.getUser().getId());
-                weightViewModel.addWeight(newWeight);
-                Toast t = Toast.makeText(getActivity(), "Added daily weight!", Toast.LENGTH_LONG);
-                t.show();
-                dialog.dismiss();
+            // Set up the date label and date picker
+            txtLabel.setText(R.string.date);
+            txtDate.setVisibility(View.VISIBLE);
+
+
+
+            // Set title and selected weight values for edit dialog, add title otherwise
+            if (weight != null) {
+                txtTitle.setText(R.string.edit_weight_entry);
+                etWeight.setText(Double.toString(weight.getWeight()));
+            }
+            else {
+                txtTitle.setText(R.string.add_weight_entry);
+            }
+
+            // Display date picker dialog and set the date in MM/DD/YYYY format
+            txtDate.setOnClickListener((v) -> {
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        (datePicker, year, month, day) -> {
+                            LocalDate date = LocalDate.of(year, month + 1, day);
+                            String formattedDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+                            txtDate.setText(formattedDate);
+                            newWeight.setDate(date);
+                            Toast t = Toast.makeText(getActivity(), formattedDate, Toast.LENGTH_LONG);
+                            t.show();
+                        },
+                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+                datePickerDialog.show();
             });
+
+            btnSave.setOnClickListener((view) -> {
+                String message;
+                Double weightValue;
+
+                try {
+                    weightValue = Double.parseDouble(etWeight.getText().toString());
+                    newWeight.setWeight(weightValue);
+
+                    if (weight == null) {
+                        newWeight.setUserId(currentUser);
+                        weightViewModel.addWeight(newWeight);
+                        message = "Added daily weight!";
+                    }
+
+                    else {
+                        weightViewModel.updateWeight(newWeight);
+                        message = "Entry updated";
+                    }
+
+                    dialog.dismiss();
+                    txtDate.setVisibility(View.GONE);
+                }
+
+                catch (NumberFormatException e) {
+                    message = "Please enter a weight";
+                }
+
+                Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+                t.show();
+            });
+
         }
-        // Populate fields with current weight data and set save button to update otherwise
-        else {
-            txtTitle.setText(R.string.edit_weight_entry);
-            etWeight.setText(Double.toString(weight.getWeight()));
-            newWeight = weight;
 
-            btnSave.setOnClickListener((v) -> {
-                Double weightValue = Double.parseDouble(etWeight.getText().toString());
-                newWeight.setWeight(weightValue);
-                weightViewModel.updateWeight(newWeight);
-                Toast t = Toast.makeText(getActivity(), "Entry updated", Toast.LENGTH_LONG);
+        // Create a set goal type dialog
+        if (args == 1) {
+            txtLabel.setText(R.string.set_goal_weight);
+            RadioGroup goalRadioGroup = dialog.findViewById(R.id.goal_radio_group);
+            goalRadioGroup.setVisibility(View.VISIBLE);
+
+            btnSave.setOnClickListener((view -> {
+                String message;
+                int goalType = -1;
+
+                // Goal type is stored in the database as an int
+                switch(goalRadioGroup.getCheckedRadioButtonId()) {
+                    case R.id.radio_goal_lose:
+                        goalType = 0;
+                        message = "Lose";
+                        break;
+                    case R.id.radio_goal_gain:
+                        goalType = 1;
+                        message = "Gain";
+                        break;
+                    case R.id.radio_goal_maintain:
+                        goalType = 2;
+                        message = "Maintain";
+                        break;
+                    default:
+                        message = "Select a goal type";
+                        break;
+                }
+                try {
+                    if (goalType != -1) {
+                        WeightGoal weightGoal = new WeightGoal();
+                        weightGoal.setGoalWeight(Double.parseDouble(etWeight.getText().toString()));
+                        weightGoal.setGoalType(goalType);
+                        weightGoal.setUserId(currentUser);
+                        weightGoalViewModel.addWeightGoal(weightGoal);
+                        txtGoalWeight.setText(Double.toString(weightGoal.getGoalWeight()));
+                        dialog.cancel();
+                    }
+                }
+                catch (NumberFormatException e) {
+                    message = "Please enter a weight";
+                }
+                Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
                 t.show();
-                dialog.dismiss();
-            });
+                goalRadioGroup.setVisibility(View.GONE);
+            }));
         }
 
         btnCancel.setOnClickListener((v) -> {
-            dialog.dismiss();
+            dialog.cancel();
         });
 
         dialog.show();
+        dialog.setOnCancelListener((v) -> {
+            if (weightGoalViewModel.getWeightGoal(currentUser) == null) {
+                dialog.show();
+                Toast t = Toast.makeText(getActivity(), "Goal weight and type are required", Toast.LENGTH_LONG);
+                t.show();
+            }
+
+        });
     }
 }

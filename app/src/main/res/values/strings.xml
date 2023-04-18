@@ -6,6 +6,7 @@
     <string name="cancel">Cancel</string>
     <string name="receive_notifications">Receive Notifications</string>
     <string name="goal_weight">Goal Weight</string>
+    <string name="set_goal_weight">Set Goal Weight and Type</string>
     <string name="progress">Progress</string>
     <string name="current_weight">Current Weight</string>
     <string name="date_entered">Date Entered</string>

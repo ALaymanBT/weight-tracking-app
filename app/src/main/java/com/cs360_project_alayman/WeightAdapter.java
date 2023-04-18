@@ -1,6 +1,5 @@
 package com.cs360_project_alayman;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,8 @@ import com.cs360_project_alayman.data.entities.Weight;
 import com.cs360_project_alayman.ui.fragments.HomeFragment;
 import com.cs360_project_alayman.viewmodel.WeightViewModel;
 
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.List;
 
 public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightViewHolder> {
@@ -39,9 +39,12 @@ public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightView
     public void onBindViewHolder(@NonNull WeightViewHolder holder, int position) {
         Weight weight = weightList.get(position);
         holder.txtWeight.setText(String.format("%.1f", weight.getWeight()));
+        holder.txtDate
+                .setText(weight.getDate()
+                .format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
         holder.txtWeight.setOnLongClickListener((v) -> {
             if (fragment instanceof HomeFragment) {
-                ((HomeFragment)fragment).showDialog(weight);
+                ((HomeFragment)fragment).createDialog(weight, 0);
             }
             return false;
         });
@@ -68,16 +71,14 @@ public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightView
     public static class WeightViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtWeight;
-        ImageButton btnDelete;
-
-        //FIXME: Should this be a date object?
         TextView txtDate;
+        ImageButton btnDelete;
 
         public WeightViewHolder(@NonNull View itemView) {
             super(itemView);
             txtWeight = itemView.findViewById(R.id.entry_list_weight);
+            txtDate = itemView.findViewById(R.id.entry_list_date);
             btnDelete = itemView.findViewById(R.id.entry_list_button_delete);
-            //FIXME: Add onClickListener to edit entries
         }
     }
 }

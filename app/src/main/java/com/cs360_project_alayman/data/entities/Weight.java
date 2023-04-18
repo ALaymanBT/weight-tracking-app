@@ -6,12 +6,11 @@ import androidx.room.ForeignKey;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "id",
             childColumns = "user_id"), indices = {@Index(value = "user_id")})
 public class Weight {
-
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private long id;
@@ -22,8 +21,9 @@ public class Weight {
     @ColumnInfo(name = "weight")
     private double weight;
 
+    @ColumnInfo(name = "date")
+    private LocalDate date;
 
-    //FIXME: Need column and getter/setter for date entered
 
     public long getId() {
         return id;
@@ -47,5 +47,13 @@ public class Weight {
 
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 }

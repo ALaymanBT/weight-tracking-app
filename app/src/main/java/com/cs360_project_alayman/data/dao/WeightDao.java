@@ -19,13 +19,12 @@ public interface WeightDao {
     @Query("SELECT * FROM Weight WHERE id = :id")
     Weight getWeight(long id);
     // FIXME: Order by date
-    @Query("SELECT * FROM Weight WHERE user_id = :userId")
+    @Query("SELECT * FROM Weight WHERE user_id = :userId ORDER BY date")
     LiveData<List<Weight>> getWeightList(long userId);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long addWeight(Weight weight);
 
-    //FIXME: Need an update annotation
     @Delete
     void deleteWeight(Weight weight);
 
