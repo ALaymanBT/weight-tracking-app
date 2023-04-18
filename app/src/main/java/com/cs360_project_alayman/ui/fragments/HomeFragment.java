@@ -1,7 +1,12 @@
 package com.cs360_project_alayman.ui.fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,7 +35,6 @@ import android.widget.Toast;
 import com.cs360_project_alayman.WeightAdapter;
 import com.cs360_project_alayman.data.entities.Weight;
 import com.cs360_project_alayman.data.entities.WeightGoal;
-import com.cs360_project_alayman.repository.UserWeightRepository;
 import com.cs360_project_alayman.ui.activities.MainActivity;
 import com.cs360_project_alayman.R;
 import com.cs360_project_alayman.utils.auth.AuthenticatedUserManager;
@@ -42,20 +46,22 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Calendar;
-import java.util.Date;
 
 
 public class HomeFragment extends Fragment {
 
     private AuthenticatedUserManager authenticatedUserManager;
-    private UserWeightRepository userWeightRepository;
     private FloatingActionButton addFab;
     private RecyclerView weightRecyclerView;
     private WeightAdapter weightAdapter;
     private WeightViewModel weightViewModel;
     private WeightGoalViewModel weightGoalViewModel;
+    private NotificationManager notificationManager;
     private TextView txtGoalWeight;
+    private TextView txtProgress;
+    private TextView txtCurrentWeight;
     private long currentUser;
+    private WeightGoal userGoalWeight;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,11 +77,12 @@ public class HomeFragment extends Fragment {
         authenticatedUserManager = AuthenticatedUserManager.getInstance();
         currentUser = authenticatedUserManager.getUser().getId();
 
-        // FIXME: Might not need this if using viewmodel, don't forget the add button and variable declaration
-        userWeightRepository = UserWeightRepository.getInstance(getContext());
+        notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 
         addFab = view.findViewById(R.id.fab_add);
         txtGoalWeight = view.findViewById(R.id.goal_weight);
+        txtCurrentWeight = view.findViewById(R.id.current_weight);
+        txtProgress = view.findViewById(R.id.weight_progress);
 
         weightRecyclerView = view.findViewById(R.id.weight_list);
         weightRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -102,6 +109,7 @@ public class HomeFragment extends Fragment {
                         return true;
                     case R.id.action_logout:
                         authenticatedUserManager.setUser(null);
+                        notificationManager.cancelAll();
                         fragmentTransaction.replace(R.id.nav_host_fragment_container, LoginFragment.class, null)
                                 .commit();
                         return true;
@@ -127,7 +135,7 @@ public class HomeFragment extends Fragment {
      */
     public void initData() {
         weightGoalViewModel = new ViewModelProvider(this).get(WeightGoalViewModel.class);
-        WeightGoal userGoalWeight = weightGoalViewModel.getWeightGoal(currentUser);
+        userGoalWeight = weightGoalViewModel.getWeightGoal(currentUser);
 
         if (userGoalWeight == null) {
             createDialog(null, 1);
@@ -138,10 +146,44 @@ public class HomeFragment extends Fragment {
         weightViewModel = new ViewModelProvider(this).get(WeightViewModel.class);
         weightAdapter = new WeightAdapter(this, weightViewModel);
 
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(String.format("MyPrefs" + currentUser), MODE_PRIVATE);
+        Boolean notif = sharedPref.getBoolean("receiveNotif", false);
+
         // Get weight list live data for current logged in user
         weightViewModel.getWeightList(currentUser)
                 .observe(getViewLifecycleOwner(), (weights) -> {
+
                     weightAdapter.setWeightList(weights);
+                    if(weights.size() > 0) {
+                        Double currentWeight = weights.get(0).getWeight();
+                        Double startingWeight = weights.get(weights.size() - 1).getWeight();
+
+                        if(notif) {
+                            switch (userGoalWeight.getGoalType()) {
+                                case 0:
+                                    if (userGoalWeight.getGoalWeight() >= currentWeight) {
+                                        ((MainActivity)getActivity()).createNotification();
+                                    }
+                                    break;
+                                case 1:
+                                    if (userGoalWeight.getGoalWeight() <= currentWeight) {
+                                        ((MainActivity)getActivity()).createNotification();
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+
+                            Toast t = Toast.makeText(getContext(), "TRUE", Toast.LENGTH_LONG);
+                            t.show();
+                        }
+                        txtCurrentWeight.setText(Double.toString(currentWeight));
+
+                        // Set progress card to the newest minus the oldest weight
+                        txtProgress.setText(Double.toString(currentWeight - startingWeight));
+
+                    }
+
                 });
 
         weightRecyclerView.setAdapter(weightAdapter);
@@ -206,27 +248,32 @@ public class HomeFragment extends Fragment {
                 String message;
                 Double weightValue;
 
-                try {
-                    weightValue = Double.parseDouble(etWeight.getText().toString());
-                    newWeight.setWeight(weightValue);
-
-                    if (weight == null) {
-                        newWeight.setUserId(currentUser);
-                        weightViewModel.addWeight(newWeight);
-                        message = "Added daily weight!";
-                    }
-
-                    else {
-                        weightViewModel.updateWeight(newWeight);
-                        message = "Entry updated";
-                    }
-
-                    dialog.dismiss();
-                    txtDate.setVisibility(View.GONE);
+                if (!checkDuplicateDate(newWeight)) {
+                    message = "duplicate date";
                 }
+                else {
+                    try {
+                        weightValue = Double.parseDouble(etWeight.getText().toString());
+                        newWeight.setWeight(weightValue);
 
-                catch (NumberFormatException e) {
-                    message = "Please enter a weight";
+                        if (weight == null) {
+                            newWeight.setUserId(currentUser);
+                            weightViewModel.addWeight(newWeight);
+                            message = "Added daily weight!";
+                        }
+
+                        else {
+                            weightViewModel.updateWeight(newWeight);
+                            message = "Entry updated";
+                        }
+
+                        dialog.dismiss();
+                        txtDate.setVisibility(View.GONE);
+                    }
+
+                    catch (NumberFormatException e) {
+                        message = "Please enter a weight";
+                    }
                 }
 
                 Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
@@ -255,10 +302,6 @@ public class HomeFragment extends Fragment {
                         goalType = 1;
                         message = "Gain";
                         break;
-                    case R.id.radio_goal_maintain:
-                        goalType = 2;
-                        message = "Maintain";
-                        break;
                     default:
                         message = "Select a goal type";
                         break;
@@ -269,6 +312,7 @@ public class HomeFragment extends Fragment {
                         weightGoal.setGoalWeight(Double.parseDouble(etWeight.getText().toString()));
                         weightGoal.setGoalType(goalType);
                         weightGoal.setUserId(currentUser);
+                        userGoalWeight = weightGoal;
                         weightGoalViewModel.addWeightGoal(weightGoal);
                         txtGoalWeight.setText(Double.toString(weightGoal.getGoalWeight()));
                         dialog.cancel();
@@ -296,5 +340,12 @@ public class HomeFragment extends Fragment {
             }
 
         });
+    }
+
+    public Boolean checkDuplicateDate(Weight weight) {
+        if (weightViewModel.getDate(currentUser, weight.getDate()) == null) {
+            return true;
+        }
+        return false;
     }
 }

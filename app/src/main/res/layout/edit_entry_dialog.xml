@@ -77,11 +77,6 @@
                 android:id="@+id/radio_goal_gain"
                 android:text="Gain" />
 
-            <RadioButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/radio_goal_maintain"
-                android:text="Maintain" />
 
         </RadioGroup>
 

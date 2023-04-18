@@ -13,6 +13,7 @@ import com.cs360_project_alayman.data.dao.UserDao;
 import com.cs360_project_alayman.data.entities.Weight;
 import com.cs360_project_alayman.data.entities.WeightGoal;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class UserWeightRepository {
@@ -50,7 +51,6 @@ public class UserWeightRepository {
 
     public void addUser(User user) {
         long userId = userDao.addUser(user);
-        //user.setId(userId);
     }
 
     public User getUser(String username) {
@@ -66,8 +66,8 @@ public class UserWeightRepository {
     public void updateWeight(Weight weight) {
         weightDao.updateWeight(weight);
     }
-    public Weight getWeight(long id) {
-        return weightDao.getWeight(id);
+    public Weight getDate(long id, LocalDate date) {
+        return weightDao.getDate(id, date);
     }
     public LiveData<List<Weight>> getWeightList(long userId) {
         return weightDao.getWeightList(userId);
@@ -79,11 +79,5 @@ public class UserWeightRepository {
 
     public WeightGoal getWeightGoal(long userId) {
         return weightGoalDao.getWeightGoal(userId);
-    }
-
-
-    //FIXME: Don't think I actually need this, should be using authenticated user class
-    public User getRegisteredUser(String username, String password) {
-        return userDao.getRegisteredUser(username, password);
     }
 }

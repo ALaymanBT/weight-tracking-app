@@ -30,7 +30,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="start"
-            android:paddingStart="70dp"
+            android:paddingStart="30dp"
             android:layout_marginStart="16dp"
             android:textAppearance="?attr/textAppearanceListItem" />
     </TableRow>

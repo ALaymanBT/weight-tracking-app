@@ -8,19 +8,24 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.cs360_project_alayman.data.converters.LocalDateConverter;
 import com.cs360_project_alayman.data.entities.Weight;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.ArrayList;
 
 @Dao
 public interface WeightDao {
 
     @Query("SELECT * FROM Weight WHERE id = :id")
     Weight getWeight(long id);
-    // FIXME: Order by date
-    @Query("SELECT * FROM Weight WHERE user_id = :userId ORDER BY date")
+
+    @Query("SELECT * FROM Weight WHERE user_id = :userId ORDER BY date DESC")
     LiveData<List<Weight>> getWeightList(long userId);
+
+    @Query("SELECT * FROM Weight WHERE user_id = :userId AND date = :date")
+    Weight getDate(long userId, LocalDate date);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long addWeight(Weight weight);

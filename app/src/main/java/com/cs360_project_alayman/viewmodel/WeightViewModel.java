@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import com.cs360_project_alayman.data.entities.Weight;
 import com.cs360_project_alayman.repository.UserWeightRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class WeightViewModel extends AndroidViewModel {
@@ -33,6 +34,9 @@ public class WeightViewModel extends AndroidViewModel {
 
     public void updateWeight(Weight weight) {
         userWeightRepository.updateWeight(weight);
+    }
+    public Weight getDate(long id, LocalDate date) {
+        return userWeightRepository.getDate(id, date);
     }
 
 }
