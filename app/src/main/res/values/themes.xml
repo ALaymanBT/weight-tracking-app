@@ -1,6 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Base application theme. -->
-    <style name="Theme.CS360Project2_ALayman" parent="Theme.MaterialComponents.Light">
+    <style name="Theme.CS360Project_ALayman" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/mint_green</item>
         <item name="colorPrimaryVariant">@color/sea_green</item>

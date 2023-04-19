@@ -14,7 +14,7 @@
     <!-- FIXME: Display request permission SMS dialog on switch -->
 
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/sms_notification"
+        android:id="@+id/switch_sms_notification"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="48dp"

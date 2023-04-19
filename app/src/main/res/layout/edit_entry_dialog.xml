@@ -4,13 +4,18 @@
             Will be used for both adding and editing entries -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_entry_container"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp">
+    android:layout_marginStart="40dp"
+    android:layout_marginEnd="40dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/edit_entry_title"
+        android:gravity="center" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -23,32 +28,64 @@
             android:text="@string/weight"/>
 
         <EditText
-            android:id="@+id/entry_input"
+            android:id="@+id/weight_input"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
             android:maxLines="1"
             android:inputType="number"
             style="@style/input"/>
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
+        android:orientation="vertical">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/date"/>
+            android:id="@+id/entry_secondary_label"
+            android:gravity="center" />
 
-        <EditText
+        <TextView
             android:id="@+id/date_input"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:maxLines="1"
-            style="@style/input"
-            android:inputType="date"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            style="@style/input"/>
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/goal_radio_group"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:visibility="gone">
 
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:id="@+id/radio_goal_lose"
+                android:text="@string/goal_lose" />
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:id="@+id/radio_goal_gain"
+                android:text="@string/goal_gain" />
+
+
+        </RadioGroup>
+
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_dialog_error"
+        android:gravity="center"
+        style="@style/text_danger" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,14 +94,14 @@
         android:padding="8dp">
 
         <Button
-            android:id="@+id/cancel_edit_button"
+            android:id="@+id/edit_button_negative"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:text="@string/cancel"
             android:layout_weight="1"/>
 
         <Button
-            android:id="@+id/save_edit_button"
+            android:id="@+id/edit_button_positive"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/save"

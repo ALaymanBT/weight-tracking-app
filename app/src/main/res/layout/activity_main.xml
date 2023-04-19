@@ -1,135 +1,32 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:columnCount="2">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight="1"
-        style="@style/card"
-        card_view:cardBackgroundColor="@color/gold">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/goal_weight"/>
-
-        <TextView
-            android:id="@+id/goal_weight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/card_content_main"
-            android:text="160lbs"/>
-
-    </androidx.cardview.widget.CardView>
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_view2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight="1"
-        android:layout_rowSpan="1"
-        style="@style/card"
-        card_view:cardBackgroundColor="@color/regentBlue">
-
-        <TextView
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/progress"/>
-
-        <TextView
-            android:id="@+id/weight_progress"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/card_content_main"
-            android:text="-7lbs"/>
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_view3"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_rowWeight="1"
-        style="@style/card"
-        card_view:cardBackgroundColor="@color/cherub">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/current_weight"/>
-
-        <TextView
-            android:id="@+id/current_weight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/card_content_main"
-            android:text="178lbs"/>
-    </androidx.cardview.widget.CardView>
-
-    <!-- FIXME: Convert to fragment container for data table-->
-    <RelativeLayout
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_columnWeight="1"
-        android:layout_columnSpan="2"
-        android:layout_rowWeight="2">
-        <!-- FIXME: Add dialog to add/edit entries-->
-        <TableLayout
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_margin="8dp">
-
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_marginStart="58dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/text_margin"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/weight" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="@dimen/text_margin"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/date_entered" />
-            </TableRow>
-
-        <!-- FIXME: OnLongClick of list item open edit entry dialog -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/list"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/list_item_entry" />
-        </TableLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/add"
-            android:layout_margin="16dp"
-            app:fabSize="normal"
-            app:maxImageSize="56dp"
-            android:contentDescription="@string/add_weight_entry" />
-    </RelativeLayout>
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" />
+    </com.google.android.material.appbar.AppBarLayout>
 
 
-</GridLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:id="@+id/nav_host_fragment_container"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+
+</LinearLayout>

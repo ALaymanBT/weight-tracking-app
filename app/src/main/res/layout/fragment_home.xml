@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:columnCount="2">
+
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="1"
+        android:layout_rowWeight="1"
+        style="@style/card"
+        card_view:cardBackgroundColor="@color/gold">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/goal_weight"/>
+
+        <TextView
+            android:id="@+id/goal_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/card_content_main" />
+
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="1"
+        android:layout_rowWeight="1"
+        android:layout_rowSpan="1"
+        style="@style/card"
+        card_view:cardBackgroundColor="@color/regentBlue">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/progress"/>
+
+        <TextView
+            android:id="@+id/weight_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/card_content_main" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="1"
+        android:layout_rowWeight="1"
+        style="@style/card"
+        card_view:cardBackgroundColor="@color/cherub">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/current_weight"/>
+
+        <TextView
+            android:id="@+id/current_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/card_content_main" />
+    </androidx.cardview.widget.CardView>
+
+    <!-- FIXME: Convert to fragment container for data table-->
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_columnWeight="1"
+        android:layout_columnSpan="2"
+        android:layout_rowWeight="2">
+        <!-- FIXME: Add dialog to add/edit entries-->
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:text="@string/weight"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:text="@string/date_entered"
+                    android:textStyle="bold" />
+            </TableRow>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/weight_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/list_item_entry" />
+        </TableLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:src="@drawable/add"
+            android:layout_margin="16dp"
+            app:fabSize="normal"
+            app:maxImageSize="56dp"
+            android:contentDescription="@string/add_weight_entry" />
+    </RelativeLayout>
+
+</GridLayout>

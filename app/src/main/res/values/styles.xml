@@ -9,7 +9,10 @@
 
     <style name="button.light">
         <item name="android:background">@drawable/button_light</item>
+    </style>
 
+    <style name="text_danger">
+        <item name="android:textColor">@color/red</item>
     </style>
 
     <style name="card">
