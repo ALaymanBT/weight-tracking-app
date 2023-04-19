@@ -76,6 +76,10 @@ public class HomeFragment extends Fragment {
         notificationHelper = NotificationHelper.getInstance();
         notificationHelper.setUserId(currentUser);
 
+        weightGoalViewModel = new ViewModelProvider(this).get(WeightGoalViewModel.class);
+        weightViewModel = new ViewModelProvider(this).get(WeightViewModel.class);
+        weightAdapter = new WeightAdapter(this, weightViewModel);
+
         addFab = view.findViewById(R.id.fab_add);
         txtGoalWeight = view.findViewById(R.id.goal_weight);
         txtCurrentWeight = view.findViewById(R.id.current_weight);
@@ -122,7 +126,6 @@ public class HomeFragment extends Fragment {
         });
 
         initData();
-
     }
 
     /**
@@ -131,9 +134,9 @@ public class HomeFragment extends Fragment {
      * to display the returned data
      */
     public void initData() {
-        weightGoalViewModel = new ViewModelProvider(this).get(WeightGoalViewModel.class);
         userGoalWeight = weightGoalViewModel.getWeightGoal(currentUser);
 
+        // Prompt user to add a goal weight if no goal weight exists in the database
         if (userGoalWeight == null) {
             createDialog(null, 1);
         }
@@ -141,28 +144,24 @@ public class HomeFragment extends Fragment {
             txtGoalWeight.setText(Double.toString(userGoalWeight.getGoalWeight()));
         }
 
-        Boolean notif = notificationHelper.getNotificationPreference();
-
         // Get weight list live data for current logged in user
         weightViewModel.getWeightList(currentUser)
                 .observe(getViewLifecycleOwner(), (weights) -> {
-                    weightAdapter.setWeightList(weights);
+
                     if(weights.size() > 0) {
                         Double currentWeight = weights.get(0).getWeight();
                         Double startingWeight = weights.get(weights.size() - 1).getWeight();
 
-                        if(true) {
+                        if(notificationHelper.getNotificationPreference()) {
                             switch (userGoalWeight.getGoalType()) {
                                 case 0:
                                     if (userGoalWeight.getGoalWeight() >= currentWeight) {
-                                        //notificationHelper.createNotification();
-                                        Toast t = Toast.makeText(getContext(), "TRUE", Toast.LENGTH_LONG);
-                                        t.show();
+                                        notificationHelper.createNotification();
                                     }
                                     break;
                                 case 1:
                                     if (userGoalWeight.getGoalWeight() <= currentWeight) {
-                                        //notificationHelper.createNotification();
+                                        notificationHelper.createNotification();
                                     }
                                     break;
                                 default:
@@ -173,12 +172,15 @@ public class HomeFragment extends Fragment {
 
                         // Set progress card to the newest minus the oldest weight
                         txtProgress.setText(Double.toString(currentWeight - startingWeight));
-
+                        weightAdapter.setWeightList(weights);
+                        weightRecyclerView.setAdapter(weightAdapter);
                     }
 
                 });
 
-        weightRecyclerView.setAdapter(weightAdapter);
+
+
+
     }
 
     /**
@@ -198,12 +200,12 @@ public class HomeFragment extends Fragment {
         EditText etWeight = dialog.findViewById(R.id.weight_input);
         TextView txtTitle = dialog.findViewById(R.id.edit_entry_title);
         TextView txtLabel = dialog.findViewById(R.id.entry_secondary_label);
+        TextView txtError = dialog.findViewById(R.id.text_dialog_error);
 
 
         // Create add/edit dialog
         if (args == 0) {
             TextView txtDate = dialog.findViewById(R.id.date_input);
-            final Calendar calendar = Calendar.getInstance();
             Weight newWeight = new Weight();
 
             // Set up the date label and date picker
@@ -214,32 +216,23 @@ public class HomeFragment extends Fragment {
             if (weight != null) {
                 txtTitle.setText(R.string.edit_weight_entry);
                 etWeight.setText(Double.toString(weight.getWeight()));
+                txtDate.setText(weight.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
             }
             else {
                 txtTitle.setText(R.string.add_weight_entry);
+                txtDate.setText(LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
             }
-
-            // Display date picker dialog and set the date in MM/DD/YYYY format
-            txtDate.setOnClickListener((v) -> {
-                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
-                        (datePicker, year, month, day) -> {
-                            LocalDate date = LocalDate.of(year, month + 1, day);
-                            String formattedDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
-                            txtDate.setText(formattedDate);
-                            newWeight.setDate(date);
-                            Toast t = Toast.makeText(getActivity(), formattedDate, Toast.LENGTH_LONG);
-                            t.show();
-                        },
-                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
-                datePickerDialog.show();
-            });
 
             btnSave.setOnClickListener((view) -> {
                 String message;
+                String errorMessage = null;
                 Double weightValue;
 
+                DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+                newWeight.setDate(LocalDate.parse(txtDate.getText(), formatter));
+
                 if (checkDuplicateDate(newWeight)) {
-                    message = "duplicate date";
+                    errorMessage = "A daily weight entry was already entered on this date. Please enter a different date.";
                 }
                 else {
                     try {
@@ -257,17 +250,39 @@ public class HomeFragment extends Fragment {
                             message = "Entry updated";
                         }
 
+                        Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+                        t.show();
                         dialog.dismiss();
                         txtDate.setVisibility(View.GONE);
                     }
 
                     catch (NumberFormatException e) {
-                        message = "Please enter a weight";
+                        errorMessage = "Please enter a valid weight";
                     }
                 }
+                if (errorMessage != null) {
+                    txtError.setText(errorMessage);
+                }
+            });
 
-                Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
-                t.show();
+            // Display date picker dialog
+            txtDate.setOnClickListener((v) -> {
+                LocalDate dateToShow;
+                if (weight == null) {
+                    dateToShow = LocalDate.now();
+                }
+                else {
+                    dateToShow = newWeight.getDate();
+                }
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(getContext(),
+                        (datePicker, year, month, day) -> {
+                            LocalDate date = LocalDate.of(year, month + 1, day);
+                            String formattedDate = date.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM));
+                            txtDate.setText(formattedDate);
+                        },
+                        dateToShow.getYear(), dateToShow.getMonthValue() - 1, dateToShow.getDayOfMonth());
+                datePickerDialog.show();
             });
 
         }
@@ -279,18 +294,16 @@ public class HomeFragment extends Fragment {
             goalRadioGroup.setVisibility(View.VISIBLE);
 
             btnSave.setOnClickListener((view -> {
-                String message;
+                String message = null;
                 int goalType = -1;
 
                 // Goal type is stored in the database as an int
                 switch(goalRadioGroup.getCheckedRadioButtonId()) {
                     case R.id.radio_goal_lose:
                         goalType = 0;
-                        message = "Lose";
                         break;
                     case R.id.radio_goal_gain:
                         goalType = 1;
-                        message = "Gain";
                         break;
                     default:
                         message = "Select a goal type";
@@ -305,15 +318,16 @@ public class HomeFragment extends Fragment {
                         userGoalWeight = weightGoal;
                         weightGoalViewModel.addWeightGoal(weightGoal);
                         txtGoalWeight.setText(Double.toString(weightGoal.getGoalWeight()));
+                        goalRadioGroup.setVisibility(View.GONE);
                         dialog.cancel();
                     }
                 }
                 catch (NumberFormatException e) {
                     message = "Please enter a weight";
                 }
-                Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
-                t.show();
-                goalRadioGroup.setVisibility(View.GONE);
+                if (message != null) {
+                    txtError.setText(message);
+                }
             }));
         }
 
@@ -325,18 +339,16 @@ public class HomeFragment extends Fragment {
         dialog.setOnCancelListener((v) -> {
             if (weightGoalViewModel.getWeightGoal(currentUser) == null) {
                 dialog.show();
-                Toast t = Toast.makeText(getActivity(), "Goal weight and type are required", Toast.LENGTH_LONG);
-                t.show();
+                txtError.setText("Goal weight and type are required");
             }
-
         });
     }
 
     /**
      *
      * @param weight - the weight to be added to the database
-     * @return - true if a weight with a duplicate date exists for the current user in the database,
-     *           false otherwise
+     * @return - false if a weight with a duplicate date exists for the current user in the database,
+     *           true otherwise
      */
     public Boolean checkDuplicateDate(Weight weight) {
         if (weightViewModel.getDate(currentUser, weight.getDate()) == null) {

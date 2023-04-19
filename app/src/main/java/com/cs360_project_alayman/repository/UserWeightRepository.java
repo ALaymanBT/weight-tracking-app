@@ -70,7 +70,7 @@ public class UserWeightRepository {
         return weightDao.getDate(id, date);
     }
     public LiveData<List<Weight>> getWeightList(long userId) {
-        return weightDao.getWeightList(userId);
+        return weightDao.getWeightList(userId) == null ? null : weightDao.getWeightList(userId);
     }
 
     public void addWeightGoal(WeightGoal weightGoal) {

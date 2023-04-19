@@ -21,7 +21,7 @@ public class WeightViewModel extends AndroidViewModel {
     }
 
     public LiveData<List<Weight>> getWeightList(long userId) {
-        return userWeightRepository.getWeightList(userId);
+        return userWeightRepository.getWeightList(userId) == null ? null : userWeightRepository.getWeightList(userId);
     }
 
     public void deleteWeight(Weight weight) {

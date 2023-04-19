@@ -82,7 +82,12 @@
 
 
     </LinearLayout>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/text_dialog_error"
+        android:gravity="center"
+        style="@style/text_danger" />
 
     <LinearLayout
         android:layout_width="match_parent"
