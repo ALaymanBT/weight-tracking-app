@@ -17,12 +17,14 @@ import android.widget.Toast;
 import com.cs360_project_alayman.ui.activities.MainActivity;
 import com.cs360_project_alayman.R;
 import com.cs360_project_alayman.utils.auth.AuthenticatedUserManager;
+import com.cs360_project_alayman.utils.notification.NotificationHelper;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 public class SettingsFragment extends Fragment {
 
     private SwitchMaterial switchNotification;
     private AuthenticatedUserManager authenticatedUserManager;
+    private NotificationHelper notificationHelper;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -36,18 +38,16 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         authenticatedUserManager = AuthenticatedUserManager.getInstance();
+        notificationHelper = NotificationHelper.getInstance();
+
         long userId = authenticatedUserManager.getUser().getId();
         switchNotification = view.findViewById(R.id.switch_sms_notification);
-        SharedPreferences sharedPrefs = getActivity().getSharedPreferences(String.format("MyPrefs" + userId), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
-
-        switchNotification.setChecked(sharedPrefs.getBoolean("receiveNotif", false));
+        switchNotification.setChecked(notificationHelper.getNotificationPreference());
 
         switchNotification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                editor.putBoolean("receiveNotif", switchNotification.isChecked());
-                editor.apply();
+                notificationHelper.saveNotificationPreference(switchNotification.isChecked());
             }
         });
 

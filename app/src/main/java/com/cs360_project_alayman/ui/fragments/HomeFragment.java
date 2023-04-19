@@ -1,12 +1,8 @@
 package com.cs360_project_alayman.ui.fragments;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -32,12 +28,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cs360_project_alayman.WeightAdapter;
+import com.cs360_project_alayman.ui.adapters.WeightAdapter;
 import com.cs360_project_alayman.data.entities.Weight;
 import com.cs360_project_alayman.data.entities.WeightGoal;
 import com.cs360_project_alayman.ui.activities.MainActivity;
 import com.cs360_project_alayman.R;
 import com.cs360_project_alayman.utils.auth.AuthenticatedUserManager;
+import com.cs360_project_alayman.utils.notification.NotificationHelper;
 import com.cs360_project_alayman.viewmodel.WeightGoalViewModel;
 import com.cs360_project_alayman.viewmodel.WeightViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -56,7 +53,7 @@ public class HomeFragment extends Fragment {
     private WeightAdapter weightAdapter;
     private WeightViewModel weightViewModel;
     private WeightGoalViewModel weightGoalViewModel;
-    private NotificationManager notificationManager;
+    private NotificationHelper notificationHelper;
     private TextView txtGoalWeight;
     private TextView txtProgress;
     private TextView txtCurrentWeight;
@@ -68,7 +65,7 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
-    }
+            }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -76,8 +73,8 @@ public class HomeFragment extends Fragment {
         ((MainActivity) requireActivity()).setUpToolbar(title, false);
         authenticatedUserManager = AuthenticatedUserManager.getInstance();
         currentUser = authenticatedUserManager.getUser().getId();
-
-        notificationManager = (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationHelper = NotificationHelper.getInstance();
+        notificationHelper.setUserId(currentUser);
 
         addFab = view.findViewById(R.id.fab_add);
         txtGoalWeight = view.findViewById(R.id.goal_weight);
@@ -109,7 +106,7 @@ public class HomeFragment extends Fragment {
                         return true;
                     case R.id.action_logout:
                         authenticatedUserManager.setUser(null);
-                        notificationManager.cancelAll();
+                        notificationHelper.userLoggedOut();
                         fragmentTransaction.replace(R.id.nav_host_fragment_container, LoginFragment.class, null)
                                 .commit();
                         return true;
@@ -143,39 +140,34 @@ public class HomeFragment extends Fragment {
         else {
             txtGoalWeight.setText(Double.toString(userGoalWeight.getGoalWeight()));
         }
-        weightViewModel = new ViewModelProvider(this).get(WeightViewModel.class);
-        weightAdapter = new WeightAdapter(this, weightViewModel);
 
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(String.format("MyPrefs" + currentUser), MODE_PRIVATE);
-        Boolean notif = sharedPref.getBoolean("receiveNotif", false);
+        Boolean notif = notificationHelper.getNotificationPreference();
 
         // Get weight list live data for current logged in user
         weightViewModel.getWeightList(currentUser)
                 .observe(getViewLifecycleOwner(), (weights) -> {
-
                     weightAdapter.setWeightList(weights);
                     if(weights.size() > 0) {
                         Double currentWeight = weights.get(0).getWeight();
                         Double startingWeight = weights.get(weights.size() - 1).getWeight();
 
-                        if(notif) {
+                        if(true) {
                             switch (userGoalWeight.getGoalType()) {
                                 case 0:
                                     if (userGoalWeight.getGoalWeight() >= currentWeight) {
-                                        ((MainActivity)getActivity()).createNotification();
+                                        //notificationHelper.createNotification();
+                                        Toast t = Toast.makeText(getContext(), "TRUE", Toast.LENGTH_LONG);
+                                        t.show();
                                     }
                                     break;
                                 case 1:
                                     if (userGoalWeight.getGoalWeight() <= currentWeight) {
-                                        ((MainActivity)getActivity()).createNotification();
+                                        //notificationHelper.createNotification();
                                     }
                                     break;
                                 default:
                                     break;
                             }
-
-                            Toast t = Toast.makeText(getContext(), "TRUE", Toast.LENGTH_LONG);
-                            t.show();
                         }
                         txtCurrentWeight.setText(Double.toString(currentWeight));
 
@@ -188,7 +180,7 @@ public class HomeFragment extends Fragment {
 
         weightRecyclerView.setAdapter(weightAdapter);
     }
-    // FIXME: Add logic to check for duplicate date entry
+
     /**
      * @param weight - the weight to update, or null if adding a new weight
      * @param dialogType - the type of dialog to create. 0 for add/edit weight entry,
@@ -218,8 +210,6 @@ public class HomeFragment extends Fragment {
             txtLabel.setText(R.string.date);
             txtDate.setVisibility(View.VISIBLE);
 
-
-
             // Set title and selected weight values for edit dialog, add title otherwise
             if (weight != null) {
                 txtTitle.setText(R.string.edit_weight_entry);
@@ -248,7 +238,7 @@ public class HomeFragment extends Fragment {
                 String message;
                 Double weightValue;
 
-                if (!checkDuplicateDate(newWeight)) {
+                if (checkDuplicateDate(newWeight)) {
                     message = "duplicate date";
                 }
                 else {
@@ -342,10 +332,16 @@ public class HomeFragment extends Fragment {
         });
     }
 
+    /**
+     *
+     * @param weight - the weight to be added to the database
+     * @return - true if a weight with a duplicate date exists for the current user in the database,
+     *           false otherwise
+     */
     public Boolean checkDuplicateDate(Weight weight) {
         if (weightViewModel.getDate(currentUser, weight.getDate()) == null) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.cs360_project_alayman;
+package com.cs360_project_alayman.ui.adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.cs360_project_alayman.R;
 import com.cs360_project_alayman.data.entities.Weight;
 import com.cs360_project_alayman.ui.fragments.HomeFragment;
 import com.cs360_project_alayman.viewmodel.WeightViewModel;
