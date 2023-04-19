@@ -53,6 +53,7 @@ public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightView
             weightViewModel.deleteWeight(weight);
             weightList.remove(weight);
             notifyItemRemoved(position);
+
         });
     }
 

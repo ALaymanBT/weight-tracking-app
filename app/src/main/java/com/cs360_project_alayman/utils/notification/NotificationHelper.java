@@ -100,7 +100,7 @@ public class NotificationHelper {
                 .setContentText("You've met your weight goal!");
 
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent notif = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notif = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         builder.setContentIntent(notif);
         notificationManager.notify(0, builder.build());
     }

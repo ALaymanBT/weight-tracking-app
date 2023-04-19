@@ -203,7 +203,7 @@ public class HomeFragment extends Fragment {
         // Create add/edit dialog
         if (dialogType == 0) {
             TextView txtDate = dialog.findViewById(R.id.date_input);
-            Weight newWeight = new Weight();
+            Weight newWeight;
 
             // Set up the date label and date picker
             txtLabel.setText(R.string.date);
@@ -211,11 +211,13 @@ public class HomeFragment extends Fragment {
 
             // Set title and selected weight values for edit dialog, add title otherwise
             if (weight != null) {
+                newWeight = weight;
                 txtTitle.setText(R.string.edit_weight_entry);
                 etWeight.setText(Double.toString(weight.getWeight()));
                 txtDate.setText(weight.getDate().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
             }
             else {
+                newWeight = new Weight();
                 txtTitle.setText(R.string.add_weight_entry);
                 txtDate.setText(LocalDate.now().format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)));
             }
@@ -228,7 +230,7 @@ public class HomeFragment extends Fragment {
                 DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
                 newWeight.setDate(LocalDate.parse(txtDate.getText(), formatter));
 
-                if (checkDuplicateDate(newWeight)) {
+                if (false) {
                     errorMessage = "A daily weight entry was already entered on this date. Please enter a different date.";
                 }
                 else {
@@ -237,20 +239,34 @@ public class HomeFragment extends Fragment {
                         newWeight.setWeight(weightValue);
 
                         if (weight == null) {
-                            newWeight.setUserId(currentUser);
-                            weightViewModel.addWeight(newWeight);
-                            message = "Added daily weight!";
+                            if (!checkDuplicateDate(newWeight)) {
+                                newWeight.setUserId(currentUser);
+                                weightViewModel.addWeight(newWeight);
+                                message = "Added daily weight!";
+                                dialog.dismiss();
+                                txtDate.setVisibility(View.GONE);
+                                Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+                                t.show();
+                            }
+                            else {
+                                errorMessage = "A daily weight entry was already entered on this date. Please enter a different date.";
+                            }
                         }
 
-                        else {
-                            weightViewModel.updateWeight(newWeight);
-                            message = "Entry updated";
+                        else{
+                            if (!checkDuplicateDate(newWeight) || (checkDuplicateDate(newWeight) && newWeight.getDate() == weight.getDate())) {
+                                weightViewModel.updateWeight(newWeight);
+                                message = "Entry updated";
+                                dialog.dismiss();
+                                txtDate.setVisibility(View.GONE);
+                                Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
+                                t.show();
+                            }
+                            else {
+                                errorMessage = "A daily weight entry was already entered on this date. Please enter a different date.";
+                            }
                         }
 
-                        Toast t = Toast.makeText(getActivity(), message, Toast.LENGTH_LONG);
-                        t.show();
-                        dialog.dismiss();
-                        txtDate.setVisibility(View.GONE);
                     }
 
                     catch (NumberFormatException e) {
@@ -346,6 +362,10 @@ public class HomeFragment extends Fragment {
      *           true otherwise
      */
     public Boolean checkDuplicateDate(Weight weight) {
-        return weightViewModel.getDate(currentUser, weight.getDate()) != null;
+        if (weightViewModel.getDate(currentUser, weight.getDate()) != null) {
+            return true;
+        }
+
+        return false;
     }
 }
