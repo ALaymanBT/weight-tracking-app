@@ -23,12 +23,10 @@ public class UserWeightRepository {
     private final WeightDao weightDao;
     private final WeightGoalDao weightGoalDao;
 
-    //FIXME: ADD JAVADOC COMMENTS
-
     /**
      *
-     * @param context
-     * @return
+     * @param context Context of the activity
+     * @return UserWeightRepository instance of the repository class
      */
     public static UserWeightRepository getInstance(Context context) {
 
@@ -37,9 +35,8 @@ public class UserWeightRepository {
         }
         return weightRepo;
     }
-    // FIXME: Remove test from db name after testing2
     private UserWeightRepository(Context context) {
-        UserWeightDatabase db = Room.databaseBuilder(context, UserWeightDatabase.class, "user_weight_test.db")
+        UserWeightDatabase db = Room.databaseBuilder(context, UserWeightDatabase.class, "user_weight.db")
                 .allowMainThreadQueries()
                 .fallbackToDestructiveMigration()
                 .build();
@@ -50,7 +47,7 @@ public class UserWeightRepository {
     }
 
     public void addUser(User user) {
-        long userId = userDao.addUser(user);
+        userDao.addUser(user);
     }
 
     public User getUser(String username) {
@@ -58,7 +55,7 @@ public class UserWeightRepository {
     }
 
     public void addWeight(Weight weight) {
-        long weightId = weightDao.addWeight(weight);
+        weightDao.addWeight(weight);
     }
     public void deleteWeight(Weight weight) {
         weightDao.deleteWeight(weight);

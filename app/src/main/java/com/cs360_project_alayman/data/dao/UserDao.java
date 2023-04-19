@@ -12,10 +12,6 @@ public interface UserDao {
     @Query("SELECT * FROM User WHERE username = :username")
     User getUser(String username);
 
-    //FIXME: Refer to comment in database class
-    @Query("SELECT * FROM User WHERE username = :username AND password = :password")
-    User getRegisteredUser(String username, String password);
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     long addUser(User user);
 

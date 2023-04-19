@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 import com.cs360_project_alayman.R;
 import com.cs360_project_alayman.ui.activities.MainActivity;
@@ -20,7 +19,7 @@ public class NotificationHelper {
 
     private NotificationManager notificationManager;
     private static NotificationHelper instance;
-    private Context context;
+    private final Context context;
 
     private String userId;
     private static final String INFO = "notification_prefs";
@@ -94,8 +93,6 @@ public class NotificationHelper {
      * Builds a notification to be displayed when the user meets their goal weight
      */
     public void createNotification() {
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.drawable.notification_icon)

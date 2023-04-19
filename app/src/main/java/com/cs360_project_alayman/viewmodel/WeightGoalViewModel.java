@@ -10,7 +10,7 @@ import com.cs360_project_alayman.repository.UserWeightRepository;
 
 public class WeightGoalViewModel extends AndroidViewModel {
 
-    private UserWeightRepository userWeightRepository;
+    private final UserWeightRepository userWeightRepository;
 
     public WeightGoalViewModel(Application application) {
         super(application);

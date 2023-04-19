@@ -28,4 +28,7 @@
     <string name="title_login">Login</string>
     <string name="title_home">Home</string>
     <string name="title_settings">Settings</string>
+    <string name="goal_lose">Lose</string>
+    <string name="goal_gain">Gain</string>
+    <string name="delete">Delete</string>
 </resources>

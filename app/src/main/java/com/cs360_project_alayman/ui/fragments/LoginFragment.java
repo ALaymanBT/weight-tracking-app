@@ -23,7 +23,8 @@ import com.cs360_project_alayman.R;
 import com.cs360_project_alayman.repository.UserWeightRepository;
 import com.cs360_project_alayman.utils.auth.AuthenticatedUser;
 import com.cs360_project_alayman.utils.auth.AuthenticatedUserManager;
-import com.cs360_project_alayman.utils.notification.NotificationHelper;
+
+import java.util.Objects;
 
 
 /**
@@ -34,8 +35,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private EditText etUsername;
     private EditText etPassword;
-    private Button btnLogin;
-    private Button btnRegister;
     private TextView txtErrorMsg;
     private UserWeightRepository weightRepo;
     private AuthenticatedUserManager authenticatedUserManager;
@@ -53,14 +52,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         etUsername = view.findViewById(R.id.username);
         etPassword = view.findViewById(R.id.password);
-        btnLogin = view.findViewById(R.id.button_login);
-        btnRegister = view.findViewById(R.id.button_register);
+        Button btnLogin = view.findViewById(R.id.button_login);
+        Button btnRegister = view.findViewById(R.id.button_register);
         txtErrorMsg = view.findViewById(R.id.txt_login_error);
         user = new User();
 
-        //FIXME: This and the user one in login may need to go in viewmodels since they directly
-        //          access the database
-        weightRepo = UserWeightRepository.getInstance(getActivity().getApplicationContext());
+        weightRepo = UserWeightRepository.getInstance(requireActivity().getApplicationContext());
 
         authenticatedUserManager = AuthenticatedUserManager.getInstance();
 
@@ -158,9 +155,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         user = weightRepo.getUser(username);
 
         // Check if the username exists in the "User" table
-        if (user != null) {
-            return true;
-        }
-        return false;
+        return user != null;
     }
 }

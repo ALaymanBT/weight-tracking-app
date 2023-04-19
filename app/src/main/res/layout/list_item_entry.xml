@@ -4,7 +4,6 @@
     android:layout_height="wrap_content">
 
     <TableRow
-        android:id="@+id/entry_list_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <ImageButton
@@ -12,7 +11,7 @@
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:backgroundTint="@color/neon_orange"
-            android:contentDescription="Delete"
+            android:contentDescription="@string/delete"
             android:src="@android:drawable/ic_menu_delete" />
 
         <TextView

@@ -13,7 +13,7 @@ import java.util.List;
 
 public class WeightViewModel extends AndroidViewModel {
 
-    private UserWeightRepository userWeightRepository;
+    private final UserWeightRepository userWeightRepository;
 
     public WeightViewModel(Application application) {
         super(application);

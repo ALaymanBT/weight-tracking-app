@@ -1,7 +1,5 @@
 package com.cs360_project_alayman.utils.auth;
 
-import android.content.Context;
-
 public class AuthenticatedUserManager {
 
     private AuthenticatedUser user;
@@ -11,6 +9,10 @@ public class AuthenticatedUserManager {
         // Empty constructor
     }
 
+    /**
+     * Singleton pattern to ensure only one instance of the AuthenticatedUserManager is created
+     * @return
+     */
     public static AuthenticatedUserManager getInstance() {
 
         if (instance == null) {

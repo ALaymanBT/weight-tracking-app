@@ -21,9 +21,9 @@ import java.util.List;
 
 public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightViewHolder> {
 
-    Fragment fragment;
+    final Fragment fragment;
     List<Weight> weightList;
-    WeightViewModel weightViewModel;
+    final WeightViewModel weightViewModel;
 
     public WeightAdapter(Fragment fragment, WeightViewModel weightViewModel) {
         this.fragment = fragment;
@@ -71,9 +71,9 @@ public class WeightAdapter extends RecyclerView.Adapter<WeightAdapter.WeightView
 
     public static class WeightViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtWeight;
-        TextView txtDate;
-        ImageButton btnDelete;
+        final TextView txtWeight;
+        final TextView txtDate;
+        final ImageButton btnDelete;
 
         public WeightViewHolder(@NonNull View itemView) {
             super(itemView);

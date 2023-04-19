@@ -4,7 +4,6 @@
             Will be used for both adding and editing entries -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/edit_entry_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -41,8 +40,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/entry_secondary_container">
+        android:orientation="vertical">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -68,14 +66,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:id="@+id/radio_goal_lose"
-                android:text="Lose" />
+                android:text="@string/goal_lose" />
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:id="@+id/radio_goal_gain"
-                android:text="Gain" />
+                android:text="@string/goal_gain" />
 
 
         </RadioGroup>

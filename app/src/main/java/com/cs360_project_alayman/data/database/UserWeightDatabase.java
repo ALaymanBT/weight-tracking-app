@@ -12,7 +12,7 @@ import com.cs360_project_alayman.data.dao.UserDao;
 import com.cs360_project_alayman.data.entities.Weight;
 import com.cs360_project_alayman.data.entities.WeightGoal;
 
-@Database(entities = {User.class, Weight.class, WeightGoal.class}, version = 6)
+@Database(entities = {User.class, Weight.class, WeightGoal.class}, version = 1)
 @TypeConverters({LocalDateConverter.class})
 public abstract class UserWeightDatabase extends RoomDatabase {
 

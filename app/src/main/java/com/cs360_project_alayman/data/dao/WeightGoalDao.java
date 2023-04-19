@@ -14,5 +14,5 @@ public interface WeightGoalDao {
     WeightGoal getWeightGoal(long userId);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    long addWeightGoal(WeightGoal weightGoal);
+    void addWeightGoal(WeightGoal weightGoal);
 }

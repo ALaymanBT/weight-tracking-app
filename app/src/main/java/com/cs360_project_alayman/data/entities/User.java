@@ -6,6 +6,7 @@ import androidx.room.Entity;
 import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
+@SuppressWarnings("NotNullFieldNotInitialized")
 @Entity(indices = {@Index(value = {"username"},
         unique = true)})
 public class User {
@@ -30,18 +31,20 @@ public class User {
         return id;
     }
 
-    public void setUsername(String username) {
+    public void setUsername(@NonNull String username) {
         this.username = username;
     }
 
+    @NonNull
     public String getUsername() {
         return username;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(@NonNull String password) {
         this.password = password;
     }
 
+    @NonNull
     public String getPassword() {
         return password;
     }

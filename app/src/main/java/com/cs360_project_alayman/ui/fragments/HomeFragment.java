@@ -2,7 +2,6 @@ package com.cs360_project_alayman.ui.fragments;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.NotificationManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -42,13 +41,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.Calendar;
+import java.util.Objects;
 
 
 public class HomeFragment extends Fragment {
 
     private AuthenticatedUserManager authenticatedUserManager;
-    private FloatingActionButton addFab;
     private RecyclerView weightRecyclerView;
     private WeightAdapter weightAdapter;
     private WeightViewModel weightViewModel;
@@ -80,7 +78,7 @@ public class HomeFragment extends Fragment {
         weightViewModel = new ViewModelProvider(this).get(WeightViewModel.class);
         weightAdapter = new WeightAdapter(this, weightViewModel);
 
-        addFab = view.findViewById(R.id.fab_add);
+        FloatingActionButton addFab = view.findViewById(R.id.fab_add);
         txtGoalWeight = view.findViewById(R.id.goal_weight);
         txtCurrentWeight = view.findViewById(R.id.current_weight);
         txtProgress = view.findViewById(R.id.weight_progress);
@@ -91,7 +89,7 @@ public class HomeFragment extends Fragment {
 
         // Set up the toolbar menu for this fragment only
         MenuHost menuHost = getActivity();
-        menuHost.addMenuProvider(new MenuProvider() {
+        Objects.requireNonNull(menuHost).addMenuProvider(new MenuProvider() {
             @Override
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menuInflater.inflate(R.menu.appbar_menu, menu);
@@ -149,7 +147,7 @@ public class HomeFragment extends Fragment {
                 .observe(getViewLifecycleOwner(), (weights) -> {
 
                     if(weights.size() > 0) {
-                        Double currentWeight = weights.get(0).getWeight();
+                        double currentWeight = weights.get(0).getWeight();
                         Double startingWeight = weights.get(weights.size() - 1).getWeight();
 
                         if(notificationHelper.getNotificationPreference()) {
@@ -194,7 +192,6 @@ public class HomeFragment extends Fragment {
         Dialog dialog = new Dialog(getActivity());
         dialog.setContentView(R.layout.edit_entry_dialog);
 
-        int args = dialogType;
         Button btnCancel = dialog.findViewById(R.id.edit_button_negative);
         Button btnSave = dialog.findViewById(R.id.edit_button_positive);
         EditText etWeight = dialog.findViewById(R.id.weight_input);
@@ -204,7 +201,7 @@ public class HomeFragment extends Fragment {
 
 
         // Create add/edit dialog
-        if (args == 0) {
+        if (dialogType == 0) {
             TextView txtDate = dialog.findViewById(R.id.date_input);
             Weight newWeight = new Weight();
 
@@ -226,7 +223,7 @@ public class HomeFragment extends Fragment {
             btnSave.setOnClickListener((view) -> {
                 String message;
                 String errorMessage = null;
-                Double weightValue;
+                double weightValue;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
                 newWeight.setDate(LocalDate.parse(txtDate.getText(), formatter));
@@ -288,7 +285,7 @@ public class HomeFragment extends Fragment {
         }
 
         // Create a set goal type dialog
-        if (args == 1) {
+        if (dialogType == 1) {
             txtLabel.setText(R.string.set_goal_weight);
             RadioGroup goalRadioGroup = dialog.findViewById(R.id.goal_radio_group);
             goalRadioGroup.setVisibility(View.VISIBLE);
@@ -331,9 +328,7 @@ public class HomeFragment extends Fragment {
             }));
         }
 
-        btnCancel.setOnClickListener((v) -> {
-            dialog.cancel();
-        });
+        btnCancel.setOnClickListener((v) -> dialog.cancel());
 
         dialog.show();
         dialog.setOnCancelListener((v) -> {
@@ -351,9 +346,6 @@ public class HomeFragment extends Fragment {
      *           true otherwise
      */
     public Boolean checkDuplicateDate(Weight weight) {
-        if (weightViewModel.getDate(currentUser, weight.getDate()) == null) {
-            return false;
-        }
-        return true;
+        return weightViewModel.getDate(currentUser, weight.getDate()) != null;
     }
 }
