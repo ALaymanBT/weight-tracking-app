@@ -1,6 +1,4 @@
-# CS360-Mobile2App-Project
-App development project for SNHU CS360
-
+# Mobile2App-Project
 ## Briefly summarize the requirements and goals of the app you developed. What user needs was this app designed to address?  
 The main requirements of the app are to allow CRUD functionality for a weight tracking app, disallow multiple entries for a single date, and send a notification when a user meets their goal weight. All of this must be able to be on a an individual user basis, so a user database and login page were required as well. This app was designed to be a simple weight tracking app that meets all of the above requirements, allowing users to easily see their entered weights, goal, and progress.  
 
